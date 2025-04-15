@@ -1,14 +1,17 @@
-name: Python CI
+name: Python CI/CD with GitHub Pages
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
   pull_request:
-    branches: [main]
+    branches:
+      - main
 
 jobs:
-  test:
+  build-and-deploy:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -25,4 +28,11 @@ jobs:
 
       - name: Run Tests
         run: pytest
+
+      - name: Deploy to GitHub Pages
+        if: success()  # Only deploy if tests pass
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./public
 
